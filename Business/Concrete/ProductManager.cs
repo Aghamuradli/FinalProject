@@ -38,10 +38,10 @@ namespace Business.Concrete
         {
             //is kodlari -  bir is sinifi basqa sinfleri new'lemez.
             //yetkisi varmi?
-            if (DateTime.Now.Hour==22)
-            {
-                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
-            }
+            //if (DateTime.Now.Hour==14)
+            //{
+            //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            //}
 
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductsListed);
         }
