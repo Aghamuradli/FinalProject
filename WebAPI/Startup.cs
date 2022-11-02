@@ -30,9 +30,13 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers(); 
-            services.AddSingleton<IProductService,ProductManager>(); // arxa planda referance yarat //icine data tutmasaq Singleton olar
-            services.AddSingleton<IProductDal, EfProductDal>();
+            services.AddControllers();
+            //services.AddSingleton<IProductService,ProductManager>(); // arxa planda referance yarat //icine data tutmasaq Singleton olar
+            //services.AddSingleton<IProductDal, EfProductDal>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPI", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -40,6 +44,8 @@ namespace WebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
             }
 
             app.UseHttpsRedirection();
