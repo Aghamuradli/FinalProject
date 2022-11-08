@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Business.Abstract;
+using Business.CCS;
 using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
@@ -20,6 +21,10 @@ namespace Business.DependencyResolvers.AutoFac
         {
             builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance(); //arxa planda referance yarat //icine data tutmasaq Singleton olar(1000 req gelse bir ref nom. verir)
             builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
+
+            builder.RegisterType<CategoryManager>().As<ICategoryService>().SingleInstance();
+            builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().SingleInstance();
+
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
