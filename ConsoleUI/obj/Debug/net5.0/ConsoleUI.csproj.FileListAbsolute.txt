@@ -74,3 +74,4 @@ C:\Users\Agamuradov\source\repos\FinalProject\ConsoleUI\bin\Debug\net5.0\Autofac
 C:\Users\Agamuradov\source\repos\FinalProject\ConsoleUI\bin\Debug\net5.0\Autofac.Extras.DynamicProxy.dll
 C:\Users\Agamuradov\source\repos\FinalProject\ConsoleUI\bin\Debug\net5.0\Castle.Core.dll
 C:\Users\Agamuradov\source\repos\FinalProject\ConsoleUI\bin\Debug\net5.0\FluentValidation.dll
+C:\Users\Agamuradov\source\repos\FinalProject\ConsoleUI\bin\Debug\net5.0\Microsoft.IdentityModel.Abstractions.dll
