@@ -1,21 +1,19 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspects.Autofac;
-using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
-using Core.CrossCuttingConcerns.Validation;
+using Core.Aspects.Transaction;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
-using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
@@ -32,10 +30,11 @@ namespace Business.Concrete
         //Claim
         [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")] ///eger cache'de varsa data biz o olan anda add() etsek yeniden bazadan goturecek deyisidiyi ucun data
         public IResult Add(Product product)
         {
             IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName),
-              CheckIfProductCountOfCategoryCorrect(product.CategoryId),CheckIfCategoryLimitExceeded());
+              CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceeded());
 
             if (result != null)
             {
@@ -44,7 +43,7 @@ namespace Business.Concrete
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
-
+        [CacheAspect] //key , value
         public IDataResult<List<Product>> GetAll()
         {
             //is kodlari -  bir is sinifi basqa sinfleri new'lemez.
@@ -61,7 +60,9 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
         }
-
+        [CacheAspect]
+        [PerformanceAspect(5)]
+        [CacheAspect(duration: 10)]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
@@ -78,6 +79,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
             throw new NotImplementedException();
@@ -113,6 +115,18 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.CategoryLimitExceeded);
             }
             return new SuccessResult();
+        }
+        [TransactionScopeAspect]
+        public IResult AddTransactionTest(Product product)
+        {
+            Add(product);
+            if (product.UnitPrice<10)
+            {
+                throw new Exception("");
+            }
+            Add(product);
+
+            return null;
         }
     }
 }
